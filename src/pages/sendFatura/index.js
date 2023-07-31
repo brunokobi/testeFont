@@ -119,9 +119,25 @@ const handleChangeText = () => {
     valorTotal = valorTotal[1];
   } 
 
-  const energiaEletrica = texto.match(/Energia Elétrica (\S+)\s+(\S+)\s+(\S+)\s+(\S+)/)
-  const energiaInjetada = texto.match(/Energia injetada HFP. (\S+)\s+(\S+)\s+(\S+)\s+(\S+)/)
-  const energiaCompensada = texto.match(/En comp. s\/ ICMS (\S+)\s+(\S+)\s+(\S+)\s+(\S+)/) 
+  let energiaEletrica = texto.match(/Energia Elétrica (\S+)\s+(\S+)\s+(\S+)\s+(\S+)/)
+  if (energiaEletrica === null) {
+    energiaEletrica = ['','','','']
+  }
+
+   let energiaInjetada = texto.match(/Energia injetada HFP. (\S+)\s+(\S+)\s+(\S+)\s+(\S+)/)
+  if (energiaInjetada === null) {
+    energiaInjetada = texto.match(/Energia compensada GD \| (\S+)\s+(\S+)\s+(\S+)\s+(\S+)/)
+  }else if (energiaInjetada === null) {
+    energiaInjetada = ['','','','']
+  }
+  console.log('texto', texto)
+  console.log(energiaInjetada)
+  // const energiaCompensada = texto.match(/Energia SCEE s\/ ICMS (\S+)\s+(\S+)\s+(\S+)\s+(\S+)/) 
+  let energiaCompensada = texto.match(/s\/ ICMS (\S+)\s+(\S+)\s+(\S+)\s+(\S+)/)
+  if (energiaCompensada === null) {   
+    energiaCompensada = ['','','','']
+  } 
+  console.log(energiaCompensada)
  
   let contribIlumPublicaMunicipal = texto.match(/Contrib Ilum Publica Municipal (\d+,\d{2})/);
   if (contribIlumPublicaMunicipal !== null) {

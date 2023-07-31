@@ -10,7 +10,15 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
 import axios from 'axios';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 
 
 const Demo = styled('div')(({ theme }) => ({
@@ -20,6 +28,8 @@ const Demo = styled('div')(({ theme }) => ({
 
 function Lista() { 
   const [faturas, setFaturas] = React.useState([]);
+  const [openModal, setOpenModal] = React.useState(false);
+const [selectedFatura, setSelectedFatura] = React.useState(null);
 
   React.useEffect(() => {
     getFaturas();
@@ -55,6 +65,15 @@ const deleteFatura = (id) => {
     });
 }
 
+const handleOpenModal = (fatura) => {
+  setSelectedFatura(fatura);
+  setOpenModal(true);
+};
+
+const handleCloseModal = () => {
+  setOpenModal(false);
+};
+
 
 
 
@@ -72,16 +91,32 @@ return (
               {faturas.map((fatura) =>
                 <ListItem key={fatura.id}
                   secondaryAction={
-                    <IconButton edge="end" aria-label="delete"
+                    <React.Fragment>
+                  {/* Botão de Exibição */}
+                  <IconButton edge="end" aria-label="view" title='Visualizar'
+                      onClick={() => handleOpenModal(fatura)}
+                    >
+                      <VisibilityIcon                      
+                      sx={{ color: 'blue' }}/>
+                    </IconButton>
+
+
+                    {/* Botão de Exclusão */}
+                    <IconButton edge="end" aria-label="delete" title='Excluir'
                       onClick={() => deleteFatura(fatura.id)}
                     >
-                      <DeleteIcon sx={{color:'red'}}/>
-                    </IconButton>
+                      <DeleteIcon sx={{ color: 'red' }} />
+                    </IconButton> 
+                    
+                  </React.Fragment>                 
                   }
                 >
                   <ListItemAvatar>
                     <Avatar sx={{ bgcolor: 'blue' }}>
-                      <TextSnippetIcon />
+                      <TextSnippetIcon 
+                      onClick={() => handleOpenModal(fatura)}
+                      title='Visualizar'
+                      />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
@@ -93,6 +128,70 @@ return (
             </List>
           </Demo>
         </Grid>
+         {/* Dialog/Modal */}
+    <Dialog open={openModal} onClose={handleCloseModal}>
+      {selectedFatura && (
+        <>
+        <DialogTitle style={{ textAlign: 'center', color: '#007BFF', fontWeight: 'bold' }}>
+  Detalhes da Fatura
+</DialogTitle>
+<DialogContent>
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>Nº Cliente:</span> {selectedFatura.numero_cliente}
+  </DialogContentText>
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>Mês de Referência:</span> {selectedFatura.mes_referencia}
+  </DialogContentText>
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>Data de Vencimento:</span> {selectedFatura.data_vencimento}
+  </DialogContentText>
+
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>energia eletrica - consumo :</span> {selectedFatura.energia_eletrica_quantidade}    
+  </DialogContentText>
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>energia eletrica - valor :</span> {selectedFatura.energia_eletrica_preco_unitario}
+  </DialogContentText>
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>energia eletrica - valor :</span> {selectedFatura.energia_eletrica_valor}
+  </DialogContentText>
+
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>energia injetada - consumo :</span> {selectedFatura.energia_injetada_quantidade}
+  </DialogContentText>
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>energia injetada - valor :</span> {selectedFatura.energia_injetada_preco_unitario}
+  </DialogContentText>
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>energia injetada - valor :</span> {selectedFatura.energia_injetada_valor}
+  </DialogContentText>
+
+
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>energia sICMS - consumo :</span> {selectedFatura.energia_sICMS_quantidade}
+  </DialogContentText>
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>energia sICMS - valor :</span> {selectedFatura.energia_sICMS_preco_unitario}
+  </DialogContentText>
+  <DialogContentText style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
+    <span style={{ color: '#007BFF' }}>energia sICMS - valor :</span> {selectedFatura.energia_sICMS_valor}
+  </DialogContentText>
+
+
+  <DialogContentText style={{fontSize: '1.2rem', textAlign: 'center', color: '#007BFF', fontWeight: 'bold' }}>
+    <span style={{ color: '#007BFF' }}>Valor Total:</span> {selectedFatura.valor_total}
+  </DialogContentText>
+  {/* Adicione outras informações da fatura aqui */}
+</DialogContent>
+<DialogActions style={{ justifyContent: 'center' }}>
+  <Button variant="contained" color="primary" onClick={handleCloseModal}>
+    Fechar
+  </Button>
+</DialogActions>
+
+        </>
+      )}
+    </Dialog>
   </div>
 );
 }
